@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Vacina</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/nova_vacina.css">
+
+</head>
+<body>
+    <header class="container">
+        <div class="logo">
+            <img class="icon" src="assets/icon.png">
+            <h1>MyHealth</h1>
+        </div>
+        <div>
+            <button class="button_vacina"><a href="home.html">Minhas vacinas</a></button>
+            <button class="button_logout"><a href="index.html">Logout</a></button>
+        </div>
+    </header>
+
+    <div class="row">
+        <div class="column1">
+            <label>Data de vacinação </label>
+            <label>Vacina</label>
+            <label>Dose</label>
+            <label>Comprovante da vacina</label>
+            <div class="box"></div>
+            <label>Próxima vacinação</label>
+        </div>
+
+        <div class="column2">
+            <input type="date" id="datavac" name="datavac">
+            <input type="text" id="vacina" name="vacina">
+            <div class="radio">    
+                <input type="radio" id="1adose" name="dose" value="1 dose">
+                <label for="1adose">1a dose</label>
+                <input type="radio" id="2adose" name="dose" value="2 dose">
+                <label for="2adose">2a dose</label>
+                <input type="radio" id="3adose" name="dose" value="3 dose">
+                <label for="1adose">3a dose</label>
+                <input type="radio" id="reforco" name="dose" value="Reforço">
+                <label for="reforco">Reforço</label>
+                <input type="radio" id="doseunica" name="dose" value="Dose Única">
+                <label for="doseunica">Dose Única</label>
+            </div>
+            <div>
+                <button class="button_ima">Selecionar imagem...</button>
+                <input type="file" id="imagemInput" accept="image/jpeg, image/png" style="display: none;">
+                <img class="ima" id="imageid" src="assets/vac.jpeg">
+                
+            </div>
+            <input type="date" id="proxima" name="proxima">
+        </div>
+
+    </div>
+    
+    <div class="row">
+        <button class="butt" id="btncad">Cadastrar</button>
+    </div>
+
+<script type="module">
+    import {auth} from "./firebase.js";
+    import { storage } from "./firebase.js";
+    import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+    import {firestore} from "./firebase.js";
+    import {addDoc, collection, doc, setDoc, getDoc, updateDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+    import { setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+    import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js";
+
+    function redirecionarPagina() {
+            window.location.href = 'home.html';
+    }
+
+    document.getElementById("btncad").addEventListener("click", ()=>{
+            keeplogedin();
+    })
+
+
+    function getNovaVacina(imagemURL) {
+        let dataVac = document.querySelector('#datavac').value;
+        let vacina = document.querySelector('#vacina').value;
+        let dose = document.querySelector('input[name="dose"]:checked').value;
+        let proxima = document.querySelector('#proxima').value;
+
+        const novaVacina = {
+            dataVac: dataVac,
+            vacina: vacina,
+            dose: dose,
+            proxima: proxima,
+            imagemURL: imagemURL 
+        }
+
+        console.log(novaVacina);
+
+        const uid = auth.currentUser.uid; 
+        const usuariosCollectionRef = collection(firestore, "usuarios");
+        const queryRef = query(usuariosCollectionRef, where("usuarioId", "==", uid));
+
+        getDocs(queryRef)
+            .then((querySnapshot) => {
+                if (!querySnapshot.empty) {
+                    const usuarioRef = doc(firestore, "usuarios", querySnapshot.docs[0].id);
+
+                    const vacinasCollectionRef = collection(usuarioRef, "vacinas");
+
+                    addDoc(vacinasCollectionRef, novaVacina)
+                        .then(() => {
+                            console.log("Vacina adicionada com sucesso");
+                            redirecionarPagina();
+                        })
+                        .catch((error) => {
+                            console.error("Erro ao adicionar vacina:", error);
+                        });
+                } else {
+                    console.error("Usuário não encontrado");
+                }
+            })
+            .catch((error) => {
+                console.error("Erro ao consultar usuários:", error);
+            });
+    }
+
+    function keeplogedin() {
+    setPersistence(auth, browserLocalPersistence)
+        .then(() => {
+            uploadImagem()
+                .then((imagemURL) => {
+                    getNovaVacina(imagemURL);
+                })
+                .catch((error) => {
+                    console.error('Erro ao fazer upload da imagem:', error);
+                });
+        })
+        .catch((error) => {
+            console.error('Erro ao realizar o login:', error);
+        });
+    }
+
+    function selectIma(imagem) {
+        document.getElementById("imageid").src = imagem;
+    }
+
+    document.querySelector(".button_ima").addEventListener("click", () => {
+    document.getElementById("imagemInput").click();
+    });
+
+    document.getElementById("imagemInput").addEventListener("change", (event) => {
+    const arquivo = event.target.files[0];
+        if (arquivo) {
+            const leitor = new FileReader();
+            leitor.onload = (e) => {
+            selectIma(e.target.result);
+            };
+            leitor.readAsDataURL(arquivo);
+        }
+    });
+
+
+    function uploadImagem() {
+        return new Promise((resolve, reject) => {
+            const arquivo = document.getElementById('imagemInput').files[0];
+
+            if (arquivo) {
+                const storageRef = ref(storage, 'imagens/' + arquivo.name);
+
+                uploadBytes(storageRef, arquivo)
+                    .then((snapshot) => {
+                        getDownloadURL(snapshot.ref)
+                            .then((downloadURL) => {
+                                resolve(downloadURL);
+                            })
+                            .catch((error) => {
+                                reject(error);
+                            });
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            } else {
+                resolve(null);
+            }
+        });
+    }
+    
+</script>
+
+
+
+</body>
+</html>

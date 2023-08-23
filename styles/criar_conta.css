@@ -1,0 +1,115 @@
+.column1 {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    justify-content: space-evenly;
+    margin-right: 5px;
+    
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 43px;
+    color: #FFFFFF;
+}
+
+.column2 {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    justify-content: space-around;
+    margin-left: 5px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 5%;
+}
+
+.radio {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    color: #FFFFFF;
+}
+
+input {
+    width: 150%;
+    height: 25px;
+    color: #3F92C5;
+    border: 0px;
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 43px;
+    border: solid #FFFFFF;
+}
+
+input[type='radio'] {
+    -webkit-appearance:none;
+    cursor: pointer;
+    width:20px;
+    height:20px;
+    border:2px solid white;
+    border-radius:50%;
+    outline:none;
+}
+ 
+input[type='radio']:hover {
+    box-shadow:0 0 5px 0px whi inset;
+}
+  
+input[type='radio']:before {
+    content:'';
+    display:block;
+    width:90%;
+    height:90%;
+    margin-top: 1px;
+    margin-left: 1px;      
+    border-radius:50%;    
+}
+
+input[type='radio']:checked:before {
+    background:#3F92C5;
+}
+
+
+
+.butt {
+    width: 188px;
+    height: 50px;
+
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+    color: #FFFFFF;
+    cursor: pointer;
+    background: #49B976;
+    border: 1px solid #37BD6D;
+}
+
+.senha_errada {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+    margin-left: 60px;
+    font-family: 'Averia Libre';
+    font-size: 20px;
+    color: #FD7979;
+    visibility: hidden;
+}
+
+.aviso_senha {
+    visibility: visible;
+}

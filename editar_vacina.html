@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Vacina</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/editar_vacina.css">
+
+</head>
+<body>
+
+    <header class="container">
+        <div class="logo">
+            <img class="icon" src="assets/icon.png">
+            <h1>MyHealth</h1>
+        </div>
+        <div>
+            <button class="button_vacina"><a href="home.html">Minhas vacinas</a></button>
+            <button class="button_logout"><a href="index.html">Logout</a></button>
+        </div>
+    </header>
+
+    <button class="butt_ex" id="open_popup">Excluir</button>
+
+    <div class="popup_bg" id="popup">
+        <div class="popup_box">
+            <br />
+            <h2>Tem certeza que deseja remover esta vacina?</h2>
+            <div class="row">
+                <button class="butt_sim" id="confirm">SIM</button>
+                <button class="butt_can" id="close_popup">CANCELAR</button>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="column1">
+            <label>Data de vacinação </label>
+            <label>Vacina</label>
+            <label>Dose</label>
+            <label>Comprovante da vacina</label>
+            <div class="box"></div>
+            <label>Próxima vacinação</label>
+        </div>
+
+        <div class="column2">
+            <input type="date" id="data_vac" name="data_vac">
+            <input type="text" id="vacina_nome" name="vacina">
+            <div class="radio">    
+                <input type="radio" id="1adose" name="dose" value="1 dose">
+                <label for="1adose">1a dose</label>
+                <input type="radio" id="2adose" name="dose" value="2 dose">
+                <label for="2adose">2a dose</label>
+                <input type="radio" id="3adose" name="dose" value="3 dose">
+                <label for="1adose">3a dose</label>
+                <input type="radio" id="reforco" name="dose" value="Reforço">
+                <label for="reforco">Reforço</label>
+                <input type="radio" id="doseunica" name="dose" value="Dose Única">
+                <label for="doseunica">Dose Única</label>
+            </div>
+            <div>
+                <button class="button_ima" id="btnUpload">Selecionar imagem...</button>
+                <input type="file" id="imagemInput" accept="image/jpeg, image/png" style="display: none;">
+                <img class="ima" id="imageId" src="assets/vac.jpeg">
+
+            </div>
+            <input type="date" id="proxima" name="proxima">
+        </div>
+
+    </div>
+    
+    <div class="row">
+        <button class="butt" id="btncad">Salvar alterações</button>
+    </div>
+
+   
+   
+
+<script type="module">
+    import { auth } from "./firebase.js";
+    import { storage } from "./firebase.js";
+    import {firestore} from "./firebase.js";
+    import {addDoc, collection, doc, setDoc, getDoc, updateDoc, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+    import { setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+    import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js";
+
+
+    function redirecionarPagina() {
+        window.location.href = 'home.html';
+    }
+
+const urlParams = new URLSearchParams(window.location.search);
+const vacinaId = urlParams.get('vacinaId');
+
+console.log("ID da vacina:", vacinaId);
+
+
+document.getElementById("open_popup").addEventListener("click", ()=>{
+        openPopup();
+})
+
+document.getElementById("close_popup").addEventListener("click", ()=>{
+        closePopup();
+})
+
+document.getElementById("confirm").addEventListener("click", ()=>{
+        excluirVacina(vacinaId);
+})
+
+let popup = document.getElementById("popup");
+
+function openPopup() {
+    popup.classList.add("open-popup");
+}
+
+function closePopup() {
+    popup.classList.remove("open-popup");
+}
+
+
+
+function getDados() {
+    const novaDataVac = document.querySelector('#data_vac').value;
+    const vacina = document.querySelector('#vacina_nome').value;
+    const novaDose = document.querySelector('input[name="dose"]:checked').value;
+    const novaProxima = document.querySelector('#proxima').value;
+    const dados = {
+        vacina: vacina,
+        dataVac: novaDataVac,
+        dose: novaDose,
+        proxima: novaProxima,
+    }
+
+    return dados;
+}
+      
+function getUsuarioAtual() {
+  return auth.currentUser;
+}
+
+function atualizarVacina(vacinaId, dados) {
+  const usuarioAtual = getUsuarioAtual();
+  if (usuarioAtual) {
+    const usuarioId = usuarioAtual.uid;
+    const usuariosCollectionRef = collection(firestore, "usuarios");
+    const queryRef = query(usuariosCollectionRef, where("usuarioId", "==", usuarioId));
+
+    getDocs(queryRef)
+      .then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          const usuarioDoc = querySnapshot.docs[0];
+
+          const vacinaDocRef = doc(firestore, "usuarios", usuarioDoc.id, "vacinas", vacinaId);
+
+          updateDoc(vacinaDocRef, dados)
+            .then(() => {
+              console.log("Dados da vacina atualizados com sucesso");
+              redirecionarPagina();
+            })
+            .catch((error) => {
+              console.error("Erro ao atualizar os dados da vacina:", error);
+            });
+        } else {
+          console.error("Usuário nãoconst encontrado");
+        }
+      })
+      .catch((error) => {
+        console.error("Erro ao consultar usuários:", error);
+      });
+  } else {
+    console.error("Nenhum usuário logado");
+  }
+  
+}
+
+document.getElementById("btncad").addEventListener("click", ()=>{
+    const dados = getDados();
+    atualizarVacina(vacinaId, dados);
+})
+
+
+function excluirVacina(vacinaId) {
+  const usuarioAtual = getUsuarioAtual();
+  if (usuarioAtual) {
+    const usuarioId = usuarioAtual.uid;
+    const usuariosCollectionRef = collection(firestore, "usuarios");
+    const queryRef = query(usuariosCollectionRef, where("usuarioId", "==", usuarioId));
+
+    getDocs(queryRef)
+      .then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          const usuarioDoc = querySnapshot.docs[0];
+
+          const vacinaDocRef = doc(firestore, "usuarios", usuarioDoc.id, "vacinas", vacinaId);
+
+          deleteDoc(vacinaDocRef, vacinaId)
+            .then(() => {
+              console.log("Vacina excluida com sucesso");
+            })
+            .catch((error) => {
+              console.error("Erro ao excluir vacina:", error);
+            });
+        } else {
+          console.error("Usuário nãoconst encontrado");
+        }
+      })
+      .catch((error) => {
+        console.error("Erro ao consultar usuários:", error);
+      });
+  } else {
+    console.error("Nenhum usuário logado");
+  }
+}
+
+
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+    console.log("Usuário autenticado:", user.uid);
+    
+    const usuariosCollectionRef = collection(firestore, "usuarios");
+    const queryRef = query(usuariosCollectionRef, where("usuarioId", "==", user.uid));
+
+    getDocs(queryRef)
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+        console.log("Documento do usuário encontrado:", doc.id);
+        console.log("Dados do usuário:", doc.data());
+
+        const vacinasRef = collection(doc.ref, "vacinas");
+
+        getDocs(vacinasRef)
+            .then((vacinasSnapshot) => {
+            vacinasSnapshot.forEach((vacinaDoc) => {
+                if (vacinaDoc.id === vacinaId) {
+                console.log("ID da vacina:", vacinaDoc.id);
+                console.log("Dados da vacina:", vacinaDoc.data());
+
+                const vacinaInput = document.getElementById("vacina_nome");
+                vacinaInput.value = vacinaDoc.data().vacina;
+
+                const dataVacInput = document.getElementById("data_vac");
+                dataVacInput.value = vacinaDoc.data().dataVac;
+
+                const dataProxima = document.getElementById("proxima");
+                dataProxima.value = vacinaDoc.data().proxima;
+
+                const doseRadioButtons = document.getElementsByName("dose");
+                for (let i = 0; i < doseRadioButtons.length; i++) {
+                    if (doseRadioButtons[i].value === vacinaDoc.data().dose) {
+                    doseRadioButtons[i].checked = true;
+                    break;
+                    }
+                }
+
+
+                const imagemElement = document.getElementById("imageId");
+                const inputImagemElement = document.getElementById("imagemInput");
+                const urlImagem = vacinaDoc.data().imagemURL;
+
+                imagemElement.src = urlImagem;
+                inputImagemElement.addEventListener("change", function() {
+                if (inputImagemElement.files && inputImagemElement.files[0]) {
+                    const fileURL = URL.createObjectURL(inputImagemElement.files[0]);
+                    imagemElement.src = fileURL;
+                }
+                });
+
+
+                }
+            });
+            })
+            .catch((error) => {
+            console.error("Erro ao obter os documentos da coleção 'vacinas':", error);
+            });
+
+            });
+        })
+        .catch((error) => {
+            console.error("Erro ao obter os documentos de usuários:", error);
+        });
+
+
+    } else {
+    console.log("Usuário não autenticado");
+    }
+});
+
+
+
+
+
+
+</script>
+
+
+</body>
+</html>

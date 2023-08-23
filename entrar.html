@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/entrar.css">
+</head>
+<body>
+    <header class="container">
+        <div class="logo">
+            <img class="icon" src="assets/icon.png">
+            <h1>MyHealth</h1>
+        </div>
+    </header>
+    
+    <div class="row">
+        <div class="column1">
+            <label for="email">Email </label>
+            <label for="password">Senha </label>
+        </div>
+    
+        <div class="column2">
+            <input type="text" id="login">
+            <input type="password" name="password" id="password">
+        </div>
+    </div>
+
+    <div class="row">
+        <button id="btnlogin" class="butt" >Entrar</button>
+    </div>
+
+    <div class="row">
+        <a class="butt_esq" href="recuperar_senha.html">Esqueci minha senha</a> 
+    </div>
+
+    <script type="module">
+        import { auth } from "./firebase.js";
+        import { firestore } from "./firebase.js";
+        import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+        import { setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+
+        function redirecionarPagina() {
+            window.location.href = 'home.html';
+        }
+      
+        document.getElementById("btnlogin").addEventListener("click", () => {
+            keepLoggedIn();
+        });
+      
+        function getLogin() {
+            let email = document.querySelector('#login').value;
+            let senha = document.querySelector('#password').value;
+            console.log(email, senha);
+
+            signInWithEmailAndPassword(auth, email, senha)
+            .then((userCredential) => {
+                console.log('Login realizado com sucesso', userCredential.user);
+                redirecionarPagina();
+            })
+            .catch((error) => {
+                console.error('Erro ao realizar o login:', error);
+            })
+        }
+
+        function keepLoggedIn() {
+            setPersistence(auth, browserLocalPersistence)
+            .then(() => {
+                getLogin();
+            })
+            .catch((error) => {
+                console.error('Erro ao realizar o login:', error);
+            });
+
+
+        }
+        
+
+
+      </script>
+      
+
+
+
+</body>
+</html>

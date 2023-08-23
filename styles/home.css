@@ -1,0 +1,158 @@
+.container_home {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items:stretch;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.search_bar_back {
+    width: 95%;
+    display: flex;
+    background-color: white;
+    border-radius: 5px;
+
+}
+
+.search_bar {
+    width: 95%;
+    height: 25px;
+    
+    border: none;
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 29px;
+    
+}
+
+.search_icon {
+    
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    padding: 4px;
+    border-radius: 5px;
+    opacity: 50%;
+
+}
+
+.box {
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    justify-items: center;
+    align-items: center;
+    /*
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-top: 1%;
+    height: 450px;
+    */
+}
+
+.butt {
+    width: 188px;
+    height: 50px;
+
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+
+    color: #FFFFFF;
+
+    background: #49B976;
+    border: 1px solid #37BD6D;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.vac_home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: #FFFFFF;
+    height: 320px;
+    width: 330px;
+    cursor: pointer;
+}
+
+.h2{
+    padding: 0;
+    margin: 0;
+    font-family: 'Averia Libre';
+    font-size: 36px;
+    color: #3F92C5;
+}
+
+.h3 {
+    padding: 0;
+    margin: 0;
+    font-family: 'Averia Libre';
+    font-size: 16px;
+}
+
+.ima {
+    width: 299px;
+    height: 146px;
+}
+
+.dose_st {
+    color: #FFFFFF;
+    background-color: #3F92C5;
+    padding: 2px;
+}
+
+.data_st {
+    color: #8B8B8B;
+}
+
+.prox_st {
+    color: #FD7979;
+    margin-left: 50%;
+}
+
+
+/*
+itemVacina.textContent = `Nome: ${vacinas.vacina}, Data: ${vacinas.data_vac}, Dose: ${vacinas.dose},Próxima dose: ${vacinas.data_prox}`;
+
+<div class="vac_home">
+
+
+                <h2>nome vacina</h2>
+                <h3 class="dose_st">dose</h3>
+                <h3 class="data_st">data</h3>
+                <img class="ima" src="assets/vac.jpeg" alt="Comprovante de vacinação">
+                <h3 class="prox_st">Proxima vacina</h3>
+            </div>
+
+            <div class="vac_home">
+                <h2>nome vacina</h2>
+                <h3 class="dose_st">dose</h3>
+                <h3 class="data_st">data</h3>
+                <img class="ima" src="assets/vac.jpeg" alt="Comprovante de vacinação">
+                <h3 class="prox_st">Proxima vacina</h3>
+            </div>
+
+            <div class="vac_home">
+                <h2>nome vacina</h2>
+                <h3 class="dose_st">dose</h3>
+                <h3 class="data_st">data</h3>
+                <img class="ima" src="assets/vac.jpeg" alt="Comprovante de vacinação">
+                <h3 class="prox_st">Proxima vacina</h3>
+            </div>*/

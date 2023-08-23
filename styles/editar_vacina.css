@@ -1,0 +1,234 @@
+.column1 {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    justify-content: space-between;
+    margin-right: 5px;
+
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 43px;
+    color: #FFFFFF;
+}
+
+.column2 {
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    justify-content: space-between;
+    margin-left: 5px;
+
+}
+
+.box {
+    height: 150px;
+}
+
+.row {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.radio {
+    margin-bottom: 5px;
+    margin-top: 15px;
+    width: 120%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+input {
+    width: 40%;
+    height: 25px;
+    color: #3F92C5;
+    border: 0px;
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 43px;
+    border: solid #FFFFFF;
+}
+
+input[type='radio'] {
+    -webkit-appearance:none;
+    width:20px;
+    height:20px;
+    border:2px solid white;
+    border-radius:50%;
+    outline:none;
+}
+ 
+input[type='radio']:hover {
+    box-shadow:0 0 5px 0px whi inset;
+}
+  
+input[type='radio']:before {
+    content:'';
+    display:block;
+    width:90%;
+    height:90%;
+    margin-top: 1px;
+    margin-left: 1px;      
+    border-radius:50%;    
+}
+
+input[type='radio']:checked:before {
+    background:#3F92C5;
+}
+
+.ima {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    height: 150px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.button_ima {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+    cursor: pointer;
+
+    width: 299px;
+    height: 30px;
+    left: 439px;
+    top: 350px;;
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 29px;
+    color: #FFFFFF;
+
+    background: #419ED7;
+    border: 1px solid #419ED7;
+}
+
+.butt {
+    width: 170px;
+    height: 40px;
+    margin-top: 25px;
+
+    cursor: pointer;
+
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 29px;
+    text-align: center;
+    color: #FFFFFF;
+
+    background: #49B976;
+    border: 1px solid #37BD6D;
+}
+
+.butt_ex {
+    margin-top: 10px;
+    margin-left: 90%;
+
+    width: 80px;
+    height: 35px;
+
+    background: #FD7979;
+    border: 1px solid #FD7979;
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 29px;
+    text-align: center;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+.popup_bg {
+    position: absolute;
+    width: 100%;
+    height: 110%;
+    background-color: rgba( 0, 0, 0, 0.5);
+    padding: 0px;
+    margin-top: -10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    
+}
+.open-popup{
+    visibility: visible;    
+}
+
+.popup_box {
+    width: 480px;
+    height: 240px;
+    background-color: #FFFFFF;
+}
+
+h2 {
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 29px;
+    text-align: center;
+    color: #FD7979;
+}
+
+.butt_sim {
+    width: 150px;
+    height: 40px;
+    margin-top: 25px;
+    margin-right: 15px;
+
+    cursor: pointer;
+
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 29px;
+    text-align: center;
+    color: #FFFFFF;
+
+    background: #FD7979;
+    border: 1px solid #37BD6D;
+}
+
+.butt_can {
+    width: 150px;
+    height: 40px;
+    margin-top: 25px;
+    margin-left: 15px;
+
+    cursor: pointer;
+
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 29px;
+    text-align: center;
+    color: #FFFFFF;
+
+    background: #3F92C5;
+    border: 1px solid #37BD6D;
+}

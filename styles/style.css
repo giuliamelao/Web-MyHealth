@@ -1,0 +1,80 @@
+body {
+    padding: 0;
+    margin: 0;
+    background-color: #ADD5D0;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+}
+
+header {
+    background-color: #C1E7E3;
+    height: 87px;
+    top: 0;
+}
+
+h1 {
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 57px;
+    color: #419ED7;
+    margin: 0;
+}
+
+.logo{
+    display: flex;
+    flex-direction: row;
+}
+
+.icon {
+    width: 51px;
+    height: 51px;
+}
+
+.button_logout {
+    width: 100px;
+    height: 40px;
+    background: #419ED7;
+    border: 1px solid #419ED7;
+    margin-right: 10px;
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 29px;
+    text-align: center;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+.button_vacina {
+    width: 160px;
+    height: 40px;
+    background: #419ED7;
+    border: 1px solid #419ED7;
+    margin-right: 10px;
+    font-family: 'Averia Libre';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 29px;
+    text-align: center;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+}
+
+section {
+    background-color: #ADD5D0;
+    width: 100%;
+}
+

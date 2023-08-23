@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/home.css">
+
+</head>
+<body>
+    <header class="container">
+        <div class="logo">
+            <img class="icon" src="assets/icon.png">
+            <h1>MyHealth</h1>
+        </div>
+        <div>
+            <button class="button_vacina"><a href="home.html">Minhas vacinas</a></button>
+            <button class="button_logout"><a href="index.html">Logout</a></button>
+        </div>
+    </header>
+
+    <div class="body">
+        <section>
+            <div class="container_home">
+                <div class="search_bar_back">                
+                    <img class="search_icon" src="assets/LUPA.png">
+                    <input class="search_bar" type="text" placeholder="PESQUISAR VACINA... ">
+                </div>
+            </div>
+        </section>
+    
+        <section class="box" id="lista-vacinas">     
+        </section>
+    
+        <div>
+            <button class="butt"><a href="nova_vacina.html">Nova vacina</a></button>
+        </div>
+
+    </div>
+    
+    <script type="module">
+        import { auth } from "./firebase.js";
+        import { firestore } from "./firebase.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+        import {addDoc, collection, doc, setDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+            console.log("Usuário autenticado:", user.uid);
+            carregarVacinas(user.uid);
+            } else {
+            console.log("Usuário não autenticado");
+            }
+        });
+
+        //AQUI UMA FUNCÇAO APENAS PARA CARREGAR A LISTA NA HORA DE ABRIR A PAGINA
+        window.onload = function () {
+            console.log("auth");
+        }
+
+        function carregarVacinas(uid) {
+            const listaVacinas = document.getElementById('lista-vacinas');
+            const usuariosCollectionRef = collection(firestore, "usuarios"); 
+            const queryRef = query(usuariosCollectionRef, where("usuarioId", "==", uid));
+
+            getDocs(queryRef)
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                const vacinasRef = collection(doc.ref, 'vacinas'); 
+                getDocs(vacinasRef)
+                    .then((vacinasSnapshot) => {
+                    vacinasSnapshot.forEach((vacinaDoc) => {
+                        const vacinaData = vacinaDoc.data();
+                        const itemVacina = document.createElement('div');
+                        itemVacina.classList.add('vac_home');
+
+                        const nomeVacina = document.createElement('p');
+                        nomeVacina.classList.add('h2');
+                        nomeVacina.textContent = vacinaData.vacina;
+                        itemVacina.appendChild(nomeVacina);
+
+                        const dose = document.createElement('p');
+                        dose.classList.add('h3');
+                        dose.classList.add('dose_st');
+                        dose.textContent = vacinaData.dose;
+                        itemVacina.appendChild(dose);
+
+                        const data_vac = document.createElement('p');
+                        data_vac.classList.add('h3');
+                        data_vac.classList.add('data_st');
+                        data_vac.textContent = vacinaData.dataVac;
+                        itemVacina.appendChild(data_vac);
+
+                        const compVacina = document.createElement('img');
+                        compVacina.src = vacinaData.imagemURL;
+                        compVacina.classList.add('ima');
+                        itemVacina.appendChild(compVacina);
+
+                        const data_prox = document.createElement('p');
+                        data_prox.classList.add('h3');
+                        data_prox.classList.add('prox_st');
+                        data_prox.textContent = "Próxima: " + vacinaData.proxima;
+                        itemVacina.appendChild(data_prox);
+
+                        itemVacina.addEventListener('click', () => {
+                        const vacinaId = vacinaDoc.id;
+                        console.log("ID da vacina clicada:", vacinaId);
+
+                        const queryParams = new URLSearchParams();
+
+                        queryParams.set('vacinaId', vacinaId);
+
+                        const queryString = queryParams.toString();
+
+                        window.location.href = `editar_vacina.html?${queryString}`;
+                        });
+
+                        listaVacinas.appendChild(itemVacina);
+                    });
+                    })
+                    .catch((error) => {
+                    console.error('Erro ao carregar as vacinas:', error);
+                    });
+                });
+            })
+            .catch((error) => {
+                console.error('Erro ao carregar os usuários:', error);
+            });
+        }
+
+
+
+    
+        //AQUI FUNÇÃO PARA A BARRA DE PESQUISA DINÂMICA
+        //PRIMEIRO COLOCO UMA REF A ESSE ELEMENTO
+        const search_bar = document.querySelector('.search_bar');
+        search_bar.addEventListener('input', pesquisa_dinamica);
+        //FUNÇÃO RECEBE O EVENTO COMO PARAMETRO E EXECUTA A CADA LETRA DIGITADA
+        function pesquisa_dinamica(event) {
+            const input_pesquisa = event.target.value.toLowerCase();
+            const vacinas = document.querySelectorAll('.vac_home');
+            vacinas.forEach((vacina) => {
+                const nomeVacina = vacina.querySelector('.h2').textContent.toLowerCase();
+                if (nomeVacina.includes(input_pesquisa)) {
+                vacina.style.display = 'flex'; // IMPRIME SE A VACINE COINCIDE
+                } else {
+                vacina.style.display = 'none'; // OCULTA SE DIFERE
+                }
+            });
+        }           
+
+
+        //AQUI UMA FUNCÇAO APENAS PARA CARREGAR A LISTA NA HORA DE ABRIR A PAGINA
+        window.onload = function () {
+            document.addEventListener('DOMContentLoaded', carregarVacinas);
+        }
+
+    </script>
+
+</body>
+</html>
+

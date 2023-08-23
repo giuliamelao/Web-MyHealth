@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar senha</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/recuperar_senha.css">
+</head>
+<body>
+    <header class="container">
+        <div class="logo">
+            <img class="icon" src="assets/icon.png">
+            <h1>MyHealth</h1>
+        </div>
+    </header>
+
+    <div class="row">
+        <div class="column1">
+            <label for="email">Email </label>
+        </div>
+    
+        <div class="column2">
+            <input type="text" id="email">
+        </div>
+    </div>
+
+    <div class="row">
+        <button class="butt" id="recSenha">Redefinir senha</button>
+    </div>
+
+
+
+<script type="module">
+    import {auth} from "./firebase.js";
+    import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+    import {firestore} from "./firebase.js";
+    import {addDoc, collection } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+
+    function enviarEmailRec(email) {
+        sendPasswordResetEmail(auth, email)
+        .then(() => {
+            console.log("Email de recuperação de senha enviado com sucesso")
+        })
+        .catch((error) => {
+            console.error("Erro ao enviar email de redefinição de senha:", error);
+        });
+    }
+
+    document.getElementById("recSenha").addEventListener("click", ()=>{
+        const email = document.querySelector('#email').value;
+        enviarEmailRec(email);
+    })
+
+</script>
+</body>
+</html>

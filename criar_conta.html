@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/criar_conta.css">
+</head>
+<body>
+    <header class="container">
+        <div class="logo">
+            <img class="icon" src="assets/icon.png">
+            <h1>MyHealth</h1>
+        </div>
+    </header>
+
+    <div class="row">
+        <div class="column1">
+            <label for="name">Nome completo: </label>
+            <label for="sex">Sexo: </label>
+            <label for="nascimento">Data nascimento: </label>
+            <label for="email">Email: </label>
+            <label for="password">Senha: </label>
+            <label for="password">Repetir senha: </label>
+        </div>
+    
+        <div class="column2">
+            <input type="text" id="nomeCompleto">
+            <div class="radio">
+                <input type="radio" id="mas" name="gender" value="Masculino"><label for="mas">Masculino</label>
+                <input type="radio" id="fem" name="gender" value="Feminino"><label for="fem">Feminino</label>
+                <input type="radio" id="nb" name="gender" value="NãoBinário"><label for="mas">NãoBinário</label>
+            </div>
+            <input type="date" id="dataNasc">
+            <input type="text" id="email">
+            <input type="password" name="password" id="password">
+            <input type="password" name="password" id="password2">
+            
+        </div>
+        
+    </div>
+    
+    
+    <label for="senha_errada" class="senha_errada" id="senha_errada">Senha não confere!</label>
+
+
+    <div class="row">
+        <button id="btncad" class="butt">Cadastrar</button>
+    </div>
+    
+
+    <script type="module">
+        import {auth} from "./firebase.js";
+        import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+        import {firestore} from "./firebase.js";
+        import {addDoc, collection } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+
+        document.getElementById("btncad").addEventListener("click", ()=>{
+            getCadastro();
+        })
+
+        function redirecionarPagina() {
+            window.location.href = 'home.html';
+        }
+
+
+        let aviso = document.getElementById("senha_errada");
+
+        function avisoSenhaErrada() {
+        aviso.classList.add("aviso_senha");
+        }
+
+        function avisoSenhaCerta() {
+        aviso.classList.remove("aviso_senha");
+        }
+
+        function getCadastro() {
+            let nomeCompleto = document.querySelector('#nomeCompleto').value;
+            let genero = document.querySelector('input[name="gender"]:checked').value;
+            let dataNasc = document.querySelector('#dataNasc').value;
+            let email = document.querySelector('#email').value;
+            let password = document.querySelector('#password').value;
+            let password2 = document.querySelector('#password2').value;
+            
+            //AQUI A CONDICIONAL PARA VERIFICAR SE A SENHA É IGUAL OU NAO
+            //SE FOR IGUAL É REDIRECIONADO PARA HOME
+            if (password == password2) {
+
+                console.log(nomeCompleto, genero, email, password, dataNasc);
+                createUserWithEmailAndPassword(auth, email, password)
+                .then((user)=>{
+
+                    console.log("User created");
+                    console.log(user.user.uid)
+                    const usuario = {
+                        nome: nomeCompleto,
+                        dataNasc: dataNasc,
+                        genero: genero,
+                        usuarioId: user.user.uid
+                    }
+                    const collectionRef = collection(firestore, "usuarios");
+                    addDoc(collectionRef, usuario)
+                        .then(() => {
+                            console.log("Dados adicionados com sucesso");
+                            redirecionarPagina();
+                        })
+                        .catch((error) => {
+                            console.error("Erro ao adicionar os dados:", error);
+                        })
+
+
+
+
+                })
+                .catch((error)=>{
+                    console.log(error);
+                })
+
+                avisoSenhaCerta();
+            } else {
+                console.log("Senha incorreta");
+                avisoSenhaErrada();
+            }
+
+
+        }
+
+
+    </script>
+
+</body>
+</html>
